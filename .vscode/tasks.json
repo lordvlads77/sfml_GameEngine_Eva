@@ -8,6 +8,11 @@
             "args": [
                 "-std=c++17",
                 "-Iinclude",
+                "-Isrc/dynamics",
+                "src/collision/*.cpp",
+				"src/common/*.cpp",
+				"src/dynamics/*.cpp",
+				"src/rope/*.cpp",
                 "src/*.cc",
                 "-o",
                 "bin/gameEngine.exe",

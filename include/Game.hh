@@ -7,6 +7,7 @@ class Game
 private:
   sf::RenderWindow* window{};
   sf::Event* event{};
+
 public:
   Game();
   ~Game();
@@ -18,4 +19,5 @@ public:
   void Draw();
   void MainLoop();
   void Destroy();
+  void UpdatePhysics();
 };

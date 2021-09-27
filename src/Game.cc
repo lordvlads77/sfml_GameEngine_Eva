@@ -3,6 +3,10 @@
 
 //Rectangle* rectangle{new Rectangle(100, 100, 200, 100, sf::Color::Red)};
 
+// Physics Init b2box
+b2Vec2* gravity{new b2Vec2(0.f, 0.f)};
+b2World* world{new b2World(*gravity)};
+
 TextObject* textObj1{new TextObject(ASSETS_FONT_HARRYPOTTER, 25, sf::Color::White, sf::Text::Bold)};
 
 sf::Clock* gameClock{new sf::Clock()};
@@ -35,13 +39,19 @@ void Game::Initialize()
   MainLoop();
 }
 
+void Game::UpdatePhysics()
+{
+  world->ClearForces();
+  world->Step(1.f/100 * deltaTime, 8, 8);
+}
+
 //Logic, animations, etc
 void Game::Update()
 {
   deltaTime = gameClock->getElapsedTime().asSeconds();
   gameClock->restart();
 
-  if(std::abs(InputSystem::Axis().x) > 0)
+  if(std::abs(InputSystem::Axis().x) > 0 || std::abs(InputSystem::Axis().y))
   {
     runAnimation->Play(deltaTime);
   }
@@ -62,6 +72,9 @@ void Game::MainLoop()
         window->close();
       }
     }
+
+
+    UpdatePhysics();
     Input();
     Update();
     Render();

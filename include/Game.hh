@@ -7,7 +7,6 @@ class Game
 private:
   sf::RenderWindow* window{};
   sf::Event* event{};
-
 public:
   Game();
   ~Game();

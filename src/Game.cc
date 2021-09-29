@@ -3,15 +3,15 @@
 
 //Rectangle* rectangle{new Rectangle(100, 100, 200, 100, sf::Color::Red)};
 
-// Physics Init b2box
+//Physics Init
 b2Vec2* gravity{new b2Vec2(0.f, 0.f)};
 b2World* world{new b2World(*gravity)};
 
-TextObject* textObj1{new TextObject(ASSETS_FONT_HARRYPOTTER, 25, sf::Color::White, sf::Text::Bold)};
+TextObject* textObj1{new TextObject(ASSETS_FONT_HARRYPOTTER, 14, sf::Color::White, sf::Text::Bold)};
 
 sf::Clock* gameClock{new sf::Clock()};
 float deltaTime{};
-Player* player1{new Player(ASSETS_SPRITES, 4.f, 16, 16, 0, 5, 100, 25, 200.f)};
+Player* player1{new Player(ASSETS_SPRITES, 4.f, 16, 16, 0, 5, 100, 25, 200.f, world)};
 Animation* idleAnimation{new Animation()};
 Animation* runAnimation{new Animation()};
 
@@ -42,7 +42,7 @@ void Game::Initialize()
 void Game::UpdatePhysics()
 {
   world->ClearForces();
-  world->Step(1.f/100 * deltaTime, 8, 8);
+  world->Step(deltaTime, 8, 8);
 }
 
 //Logic, animations, etc
@@ -51,7 +51,9 @@ void Game::Update()
   deltaTime = gameClock->getElapsedTime().asSeconds();
   gameClock->restart();
 
-  if(std::abs(InputSystem::Axis().x) > 0 || std::abs(InputSystem::Axis().y))
+  player1->Update();
+
+  if(std::abs(InputSystem::Axis().x) > 0 || std::abs(InputSystem::Axis().y) > 0)
   {
     runAnimation->Play(deltaTime);
   }
@@ -72,7 +74,6 @@ void Game::MainLoop()
         window->close();
       }
     }
-
 
     UpdatePhysics();
     Input();
@@ -99,7 +100,7 @@ void Game::Draw()
 //Keyboard, joysticks, etc.
 void Game::Input()
 {
-  player1->Move(deltaTime);
+  player1->Move();
 }
 
 void Game::Destroy()

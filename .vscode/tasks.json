@@ -9,13 +9,13 @@
                 "-std=c++17",
                 "-Iinclude",
                 "-Isrc/dynamics",
+                "src/*.cc",
                 "src/collision/*.cpp",
 				"src/common/*.cpp",
 				"src/dynamics/*.cpp",
 				"src/rope/*.cpp",
-                "src/*.cc",
                 "-o",
-                "bin/gameEngine.exe",
+                "bin/game.exe",
                 "lib/*.a"
             ],
             "options": {
@@ -25,7 +25,7 @@
                 "$gcc"
             ],
             "group": "build",
-            "detail": "compilador: g++"
+            "detail": "compilador: \"C:\\Program Files (x86)\\mingw-w64\\mingw32\\bin\\g++.exe\""
         }
     ]
 }

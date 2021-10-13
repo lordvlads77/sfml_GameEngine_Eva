@@ -1,5 +1,7 @@
 #include "CommonHeaders.hh"
 #include "Player.hh"
+#include "Animation.hh"
+#include "TileGroup.hh"
 
 //Rectangle* rectangle{new Rectangle(100, 100, 200, 100, sf::Color::Red)};
 
@@ -10,14 +12,19 @@ b2Draw* drawPhysics{};
 
 std::vector<GameObject*>* Game::gameObjects{new std::vector<GameObject*>()};
 
-TextObject* textObj1{new TextObject(ASSETS_FONT_HARRYP, 25, sf::Color::White, sf::Text::Bold)};
+sf::CircleShape* circle{new sf::CircleShape()};
+
+TextObject* textObj1{new TextObject(ASSETS_FONT_HARRYP, 24, sf::Color::White, sf::Text::Bold)};
 
 sf::Clock* gameClock{new sf::Clock()};
 float deltaTime{};
 Player* player1{};
 GameObject* chest1{};
+
 Animation* idleAnimation{new Animation()};
 Animation* runAnimation{new Animation()};
+
+TileGroup* tileGroup{};
 
 uint32 flags{};
     //flags += b2Draw::e_aabbBit;
@@ -26,17 +33,25 @@ uint32 flags{};
     //flags += b2Draw::e_pairBit;
     //flags += b2Draw::e_jointBit;
 
+
+
 Game::Game()
 {
   window = new sf::RenderWindow(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), GAME_NAME);
   event = new sf::Event();
   drawPhysics = new DrawPhysics(window);
 
-  player1 = new Player(ASSETS_SPRITES, 4.f, 16, 16, 0, 5, 100, 25, 200.f,b2BodyType::b2_dynamicBody, world, window);
-  chest1 = new GameObject(ASSETS_SPRITES, 4.f, 16, 16, 6, 1, 300, 500,b2BodyType::b2_staticBody, world, window);
+  player1 = new Player(ASSETS_SPRITES, 4.f, 16, 16, 0, 5, 100, 25, 200.f, b2BodyType::b2_dynamicBody, world, window);
+  chest1 = new GameObject(ASSETS_SPRITES, 4.f, 16, 16, 6, 1, 300, 500, b2BodyType::b2_staticBody, world, window);
+ 
+
+  tileGroup = new TileGroup(window);
 
   AddGameObject(player1);
   AddGameObject(chest1);
+ 
+
+  
 }
 
 Game::~Game()
@@ -49,10 +64,14 @@ void Game::Start()
   flags += b2Draw::e_shapeBit;
   world->SetDebugDraw(drawPhysics);
   drawPhysics->SetFlags(flags);
-  textObj1->SetTextStr("Arde mi Poderoso Cosmo Doradoo!!!");
+
+  textObj1->SetTextStr("Arde mi Poderoso Cosmo Dorado!!!");
   idleAnimation = new Animation(player1->GetSprite(), 0, 5, 0.05f, 5);
   runAnimation = new Animation(player1->GetSprite(), 0, 5, 0.08f, 6);
 
+  circle->setRadius(2.f);
+  circle->setFillColor(sf::Color::Green);
+  circle->setOutlineColor(sf::Color::Green);
 }
 
 void Game::Initialize()
@@ -78,6 +97,9 @@ void Game::Update()
     gameObject->Update(deltaTime);
   }
 
+  circle->setPosition(player1->GetSprite()->getPosition());
+
+  
 
   if(std::abs(InputSystem::Axis().x) > 0 || std::abs(InputSystem::Axis().y) > 0)
   {
@@ -122,13 +144,15 @@ void Game::Draw()
   //player1->Draw();
   //window->draw(*circle);
 
+  tileGroup->Draw();
+
   for(auto &gameObject : *gameObjects)
   {
     gameObject->Draw();
   }
 
   window->draw(*textObj1->GetText());
-  world->DebugDraw();
+  //world->DebugDraw();
 }
 
 //Keyboard, joysticks, etc.
